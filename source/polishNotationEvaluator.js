@@ -5,7 +5,7 @@
  * Поддерживает операторы +, -, *, / и целочисленные операнды.
  * @param {String} input - строка с выражением в префиксной нотации, токены разделены пробелами
  * 
- * @returns {Number} результат вычисления выражения, либо NaN, если в STDIN подаётся пустое/некоректное выражение
+ * @returns {Number} результат вычисления выражения, либо NaN, если в input подаётся пустое/некоректное выражение
  * 
  * @example
  * polishNotationEvaluator('+ 1 9');
@@ -17,40 +17,34 @@
  */
 
 function polishNotationEvaluator(input) {
-    if (input.trim() === "") {
+    if (typeof input !== 'string' || input.trim() === "") {
         return NaN;
     }
 
     const tokens = input.trim().split(/\s+/);
     const operators = ["+", "-", "*", "/"];
     const stack = [];
+    let hasInvalidResult = false;
     
-    for (let i = tokens.length - 1; i >= 0; i--) {
-        const token = tokens[i];
-
+    tokens.slice().reverse().forEach((token) => {
         if (operators.includes(token)) {
             const a = stack.pop();
             const b = stack.pop();
+            const result = applyOperator(token, a, b);
 
-            let result;
-            switch (token) {
-                case "+":
-                    result = a + b;
-                    break;
-                case "-":
-                    result = a - b;
-                    break;
-                case "*":
-                    result = a * b;
-                    break;
-                case "/":
-                    result = a / b;
-                    break;
+            if (Number.isNaN(result)) {
+                hasInvalidResult = true;
+            } else {
+                stack.push(result)
             }
-            stack.push(result);
         } else {
             stack.push(Number(token));
         }
+    });
+
+    if (hasInvalidResult) {
+        return NaN;
     }
+
     return stack.pop();
 }
