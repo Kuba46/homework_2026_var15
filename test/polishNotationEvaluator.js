@@ -22,13 +22,6 @@ QUnit.module("Тестируем функцию polishNotationEvaluator", functi
         assert.equal(result, 0);
     });
 
-    QUnit.test("Правильно вычисляет пустое выражение", function(assert) {
-        const input = "";
-        const result = polishNotationEvaluator(input);
-
-        assert.equal(isNaN(result), true);
-    });
-
     QUnit.test("Правильно вычисляет выражение с делением", function(assert) {
         const input = "/ 10 2"; // 10 / 2
         const result = polishNotationEvaluator(input);
@@ -43,16 +36,31 @@ QUnit.module("Тестируем функцию polishNotationEvaluator", functi
         assert.equal(result, Infinity);
     });
 
-    QUnit.test("Возвращает NaN, если input не является строкой", function(assert) {
-        const result = polishNotationEvaluator(undefined);
+    QUnit.test("Выбрасывает ошибку для пустого выражения", function(assert) {
+        const input = "";
 
-        assert.equal(isNaN(result), true);
+        assert.throws(
+            () => polishNotationEvaluator(input),
+            /Invalid token/,
+            'Пустая строка должна приводить к ошибке'
+        );
     });
 
-    QUnit.test("Возвращает NaN при недостатке операндов", function(assert) {
-        const input = "+";
-        const result = polishNotationEvaluator(input);
+    QUnit.test("Выбрасывает ошибку, если input не является строкой", function(assert) {
+        assert.throws(
+            () => polishNotationEvaluator(undefined),
+            /Input must be a string/,
+            'Не строка на входе должна приводить к ошибке'
+        );
+    });
 
-        assert.equal(isNaN(result), true);
+    QUnit.test("Выбрасывает ошибку при недостатке операндов", function(assert) {
+        const input = "+";
+
+        assert.throws(
+            () => polishNotationEvaluator(input),
+            /Not enough operands/,
+            'Недостаток операндов должен приводить к ошибке'
+        );
     });
 });

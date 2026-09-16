@@ -1,50 +1,59 @@
 'use strict';
 
 /**
+ * Проверяет, является ли токен строковым представлением целого числа.
+ * @param {String} token - проверяемый токен
+ *
+ * @returns {Boolean} true, если токен — целое число (возможно, отрицательное)
+ */
+
+function isInteger(token) {
+    return /^-?\d+$/.test(token);
+}
+
+/**
  * Функция, вычисляющая результат выражения, записанного в польской нотации.
  * Поддерживает операторы +, -, *, / и целочисленные операнды.
  * @param {String} input - строка с выражением в префиксной нотации, токены разделены пробелами
- * 
- * @returns {Number} результат вычисления выражения, либо NaN, если в input подаётся пустое/некоректное выражение
- * 
+ *
+ * @throws {Error} если input не строка, содержит некорректный токен, либо не хватает операндов
+ *
+ * @returns {Number} результат вычисления выражения
+ *
  * @example
  * polishNotationEvaluator('+ 1 9');
  * // returns 10
- * 
+ *
  * @example
  * polishNotationEvaluator('* + 2 4 5');
  * // returns 30
  */
 
 function polishNotationEvaluator(input) {
-    if (typeof input !== 'string' || input.trim() === "") {
-        return NaN;
+    if (typeof input !== 'string') {
+        throw new Error('Input must be a string');
     }
 
     const tokens = input.trim().split(/\s+/);
-    const operators = ["+", "-", "*", "/"];
+    const operators = ['+', '-', '*', '/'];
     const stack = [];
-    let hasInvalidResult = false;
-    
+
     tokens.slice().reverse().forEach((token) => {
         if (operators.includes(token)) {
             const a = stack.pop();
             const b = stack.pop();
-            const result = applyOperator(token, a, b);
 
-            if (Number.isNaN(result)) {
-                hasInvalidResult = true;
-            } else {
-                stack.push(result)
+            if (a === undefined || b === undefined) {
+                throw new Error(`Not enough operands for operator "${token}"`);
             }
+
+            stack.push(applyOperator(token, a, b));
+        } else if (isInteger(token)) {
+            stack.push(+token);
         } else {
-            stack.push(Number(token));
+            throw new Error(`Invalid token: "${token}"`);
         }
     });
-
-    if (hasInvalidResult) {
-        return NaN;
-    }
 
     return stack.pop();
 }
