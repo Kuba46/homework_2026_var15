@@ -156,4 +156,14 @@ QUnit.module("Тестируем функцию polishNotationEvaluator", functi
             'undefined на входе должен приводить к ошибке'
         );
     });
+
+    QUnit.test("Выбрасывает ошибку, если оператору не хватает одного операнда", function(assert) {
+        const input = "+ + 1";
+        
+        assert.throws(
+            () => polishNotationEvaluator(input),
+            /Not enough operands/,
+            'Оператору без одного операнда должна соответствовать ошибка'
+        );
+    });
 });

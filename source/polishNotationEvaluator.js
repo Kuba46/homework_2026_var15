@@ -43,7 +43,7 @@ function polishNotationEvaluator(input) {
             const a = stack.pop();
             const b = stack.pop();
 
-            if (b === undefined) {
+            if (typeof a !== 'number' || typeof b !== 'number') {
                 throw new Error(`Not enough operands for operator "${token}"`);
             }
 
