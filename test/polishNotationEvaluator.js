@@ -29,6 +29,20 @@ QUnit.module("Тестируем функцию polishNotationEvaluator", functi
         assert.equal(result, 5);
     });
 
+    QUnit.test("Корректно возвращает дробный результат деления", function(assert) {
+        const input = "/ 7 2"; // 7 / 2
+        const result = polishNotationEvaluator(input);
+
+        assert.equal(result, 3.5);
+    });
+
+    QUnit.test("Проверяет поведение при делении на ноль", function(assert) {
+        const input = "/ 5 0";
+        const result = polishNotationEvaluator(input);
+
+        assert.equal(result, Infinity);
+    });
+
     QUnit.test("Правильно вычисляет вложенное выражение", function(assert) {
         const input = "* 2 / 8 + 5 3"; // 2 * (8 / (5 + 3))
         const result = polishNotationEvaluator(input);
@@ -39,13 +53,6 @@ QUnit.module("Тестируем функцию polishNotationEvaluator", functi
     QUnit.test("Корректно обрабатывает -0 и +0", function(assert) {
         assert.equal(polishNotationEvaluator("+ -0 0"), 0);
         assert.equal(polishNotationEvaluator("+ +0 0"), 0);
-    });
-
-    QUnit.test("Проверяет поведение при делении на ноль", function(assert) {
-        const input = "/ 5 0";
-        const result = polishNotationEvaluator(input);
-
-        assert.equal(result, Infinity);
     });
 
     QUnit.test("Выбрасывает ошибку для пустого выражения", function(assert) {
@@ -78,6 +85,36 @@ QUnit.module("Тестируем функцию polishNotationEvaluator", functi
         );
     });
 
+    QUnit.test("Выбрасывает ошибку при дробных числах", function(assert) {
+        const input = "+ 3.5 2";
+
+        assert.throws(
+            () => polishNotationEvaluator(input),
+            /Invalid token/,
+            'Дробное число как операнд должно приводить к ошибке'
+        );
+    });
+
+    QUnit.test("Выбрасывает ошибку при токене Infinity", function(assert) {
+        const input = "+ 5 Infinity";
+
+        assert.throws(
+            () => polishNotationEvaluator(input),
+            /Invalid token/,
+            'Infinity как токен должен приводить к ошибке'
+        );
+    });
+
+    QUnit.test("Выбрасывает ошибку при токене NaN", function(assert) {
+        const input = "- 6 NaN";
+
+        assert.throws(
+            () => polishNotationEvaluator(input),
+            /Invalid token/,
+            'NaN как токен должен приводить к ошибке'
+        );
+    });
+
     QUnit.test("Выбрасывает ошибку, если input — число", function(assert) {
         assert.throws(
             () => polishNotationEvaluator(42),
@@ -107,26 +144,6 @@ QUnit.module("Тестируем функцию polishNotationEvaluator", functi
             () => polishNotationEvaluator(undefined),
             /Input must be a string/,
             'undefined на входе должен приводить к ошибке'
-        );
-    });
-
-    QUnit.test("Выбрасывает ошибку при токене Infinity", function(assert) {
-        const input = "+ 5 Infinity";
-
-        assert.throws(
-            () => polishNotationEvaluator(input),
-            /Invalid token/,
-            'Infinity как токен должен приводить к ошибке'
-        );
-    });
-
-    QUnit.test("Выбрасывает ошибку при токене NaN", function(assert) {
-        const input = "- 6 NaN";
-
-        assert.throws(
-            () => polishNotationEvaluator(input),
-            /Invalid token/,
-            'NaN как токен должен приводить к ошибке'
         );
     });
 });
