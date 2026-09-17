@@ -18,7 +18,8 @@ function isInteger(token) {
  * @param {String} input - строка с выражением в префиксной нотации, токены разделены пробелами
  *
  * @throws {TypeError} если input не является строкой
- * @throws {Error} если строка содержит некорректный токен, либо не хватает операндов
+ * @throws {Error} если строка содержит некорректный токен, оператору не хватает операндов,
+ * либо операнд имеет некорректный тип
  *
  * @returns {Number} результат вычисления выражения
  *
@@ -43,8 +44,12 @@ function polishNotationEvaluator(input) {
             const a = stack.pop();
             const b = stack.pop();
 
-            if (typeof a !== 'number' || typeof b !== 'number') {
+            if (a === undefined || b === undefined) {
                 throw new Error(`Not enough operands for operator "${token}"`);
+            }
+
+            if (typeof a !== 'number' || typeof b !== 'number') {
+                throw new Error(`Invalid operand type for operator "${token}"`);
             }
 
             stack.push(applyOperator(token, a, b));
