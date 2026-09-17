@@ -95,6 +95,16 @@ QUnit.module("Тестируем функцию polishNotationEvaluator", functi
         );
     });
 
+    QUnit.test("Выбрасывает ошибку, если дробное число — последний токен выражения", function(assert) {
+        const input = "* 2 5.5";
+
+        assert.throws(
+            () => polishNotationEvaluator(input),
+            /Invalid token/,
+            'Дробное число в конце выражения должно приводить к ошибке'
+        );
+    });
+
     QUnit.test("Выбрасывает ошибку при токене Infinity", function(assert) {
         const input = "+ 5 Infinity";
 
