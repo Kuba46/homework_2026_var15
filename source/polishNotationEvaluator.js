@@ -1,14 +1,16 @@
 'use strict';
 
+const OPERATORS = ['+', '-', '*', '/'];
+
 /**
  * Проверяет, является ли токен строковым представлением целого числа.
  * @param {String} token - проверяемый токен
  *
- * @returns {Boolean} true, если токен — целое число (возможно, отрицательное)
+ * @returns {Boolean} true, если токен — целое число (возможно, со знаком)
  */
 
 function isInteger(token) {
-    return /^-?\d+$/.test(token);
+    return /^[-+]?\d+$/.test(token);
 }
 
 /**
@@ -35,15 +37,14 @@ function polishNotationEvaluator(input) {
     }
 
     const tokens = input.trim().split(/\s+/);
-    const operators = ['+', '-', '*', '/'];
     const stack = [];
 
-    tokens.slice().reverse().forEach((token) => {
-        if (operators.includes(token)) {
+    tokens.toReversed().forEach((token) => {
+        if (OPERATORS.includes(token)) {
             const a = stack.pop();
             const b = stack.pop();
 
-            if (a === undefined || b === undefined) {
+            if (b === undefined) {
                 throw new Error(`Not enough operands for operator "${token}"`);
             }
 
