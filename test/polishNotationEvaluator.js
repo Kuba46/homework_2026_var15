@@ -109,4 +109,24 @@ QUnit.module("Тестируем функцию polishNotationEvaluator", functi
             'undefined на входе должен приводить к ошибке'
         );
     });
+
+    QUnit.test("Выбрасывает ошибку при токене Infinity", function(assert) {
+        const input = "+ 5 Infinity";
+
+        assert.throws(
+            () => polishNotationEvaluator(input),
+            /Invalid token/,
+            'Infinity как токен должен приводить к ошибке'
+        );
+    });
+
+    QUnit.test("Выбрасывает ошибку при токене NaN", function(assert) {
+        const input = "- 6 NaN";
+
+        assert.throws(
+            () => polishNotationEvaluator(input),
+            /Invalid token/,
+            'NaN как токен должен приводить к ошибке'
+        );
+    });
 });

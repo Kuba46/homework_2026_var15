@@ -8,7 +8,6 @@ const OPERATORS = ['+', '-', '*', '/'];
  *
  * @returns {Boolean} true, если токен — целое число (возможно, со знаком)
  */
-
 function isInteger(token) {
     return /^[-+]?\d+$/.test(token);
 }
@@ -18,7 +17,8 @@ function isInteger(token) {
  * Поддерживает операторы +, -, *, / и целочисленные операнды.
  * @param {String} input - строка с выражением в префиксной нотации, токены разделены пробелами
  *
- * @throws {Error} если input не строка, содержит некорректный токен, либо не хватает операндов
+ * @throws {TypeError} если input не является строкой
+ * @throws {Error} если строка содержит некорректный токен, либо не хватает операндов
  *
  * @returns {Number} результат вычисления выражения
  *
@@ -30,10 +30,9 @@ function isInteger(token) {
  * polishNotationEvaluator('* + 2 4 5');
  * // returns 30
  */
-
 function polishNotationEvaluator(input) {
     if (typeof input !== 'string') {
-        throw new Error('Input must be a string');
+        throw new TypeError('Input must be a string');
     }
 
     const tokens = input.trim().split(/\s+/);
